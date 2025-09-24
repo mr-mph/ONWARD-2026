@@ -17,20 +17,23 @@ public class DriveTest2 extends LinearOpMode {
 	public void runOpMode() {
 
 		MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(new Vector2d(18,-63),-90));
-		DcMotorEx intake = hardwareMap.get(DcMotorEx.class, "fireTestMotor");
+		DcMotorEx intake = hardwareMap.get(DcMotorEx.class,"intake");
 
 
 		waitForStart();
 		intake.setPower(-1);
 
 		while (!isStopRequested()) {
+
 			drive.setDrivePowers(
 					new PoseVelocity2d(new Vector2d(
 							(-gamepad1.left_stick_y - gamepad2.left_stick_y),
 							(-gamepad1.left_stick_x - gamepad2.left_stick_x)),
 							(-gamepad1.right_stick_x - gamepad2.right_stick_x)
 					));
+
 			drive.updatePoseEstimate();
+
 			if (gamepad1.dpad_left || gamepad2.dpad_left) {
 				intake.setPower(1);
 			} else if (gamepad1.dpad_right || gamepad2.dpad_right) {

@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
 @TeleOp(name = "!Field centric teleop by Seth", group = "! Teleop")
-public class DriveTest3 extends LinearOpMode {
+public class FieldCentric extends LinearOpMode {
 
 
 
@@ -20,6 +20,7 @@ public class DriveTest3 extends LinearOpMode {
 
 		MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(new Vector2d(18,-63),-90));
 		DcMotorEx intake = hardwareMap.get(DcMotorEx.class,"intake");
+
 
 		telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -32,7 +33,6 @@ public class DriveTest3 extends LinearOpMode {
 			double driveX = (gamepad1.left_stick_x + gamepad2.left_stick_x);
 			double driveY = (-gamepad1.left_stick_y - gamepad2.left_stick_y);
 			double turn = (-gamepad1.right_stick_x - gamepad2.right_stick_x);
-
 			double heading = drive.localizer.getPose().heading.toDouble();
 			double cosHeading = Math.cos(heading);
 			double sinHeading = Math.sin(heading);

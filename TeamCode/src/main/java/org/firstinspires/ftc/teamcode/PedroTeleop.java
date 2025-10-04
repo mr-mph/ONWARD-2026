@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@TeleOp(name = "! DriveTest", group = "Teleop")
-public class DriveTest extends OpMode {
+@TeleOp(name = "! PedroPathing drivetest", group = "Teleop")
+public class PedroTeleop extends OpMode {
 	private Follower follower;
 
 	@Override

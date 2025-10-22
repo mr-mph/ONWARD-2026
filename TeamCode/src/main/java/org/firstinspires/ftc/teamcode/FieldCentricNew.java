@@ -1,21 +1,27 @@
 package org.firstinspires.ftc.teamcode;
+import static org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive.PARAMS;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.LazyHardwareMapImu;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
 @Config
-@TeleOp(name = "!Main teleop by Seth", group = "! Teleop")
-public class MainTeleop extends LinearOpMode {
+@TeleOp(name = "!Field centric main teleop by Seth", group = "! Teleop")
+public class FieldCentricNew extends LinearOpMode {
 
 	public static boolean launching = false;
 	public static double unlaunchedPos = 0.35;
@@ -28,9 +34,6 @@ public class MainTeleop extends LinearOpMode {
 
 	public static double stage2Start = 0.6;
 	public static double stage2Push = 0.3;
-
-	boolean rightBumperWasPressed = false;
-	boolean leftBumperWaspressed = false;
 
 
 	@Override
@@ -46,6 +49,14 @@ public class MainTeleop extends LinearOpMode {
 		Servo stage2 = hardwareMap.get(Servo.class,"stage2");
 		DcMotorEx launcherLeft = hardwareMap.get(DcMotorEx.class,"launchLeft");
 		DcMotorEx launcherRight = hardwareMap.get(DcMotorEx.class,"launchRight");
+		IMU imu = hardwareMap.get(IMU.class, "imu");
+
+		IMU.Parameters parameters = new IMU.Parameters(
+				new RevHubOrientationOnRobot(PARAMS.logoFacingDirection, PARAMS.usbFacingDirection)
+		);
+		imu.initialize(parameters);
+		imu.resetYaw();
+
 
 
 //		launcher.setPosition(unlaunchedPos);
@@ -55,12 +66,29 @@ public class MainTeleop extends LinearOpMode {
 
 		while (!isStopRequested()) {
 
+			double driveX = ( gamepad1.left_stick_x + gamepad2.left_stick_x);
+			double driveY = (- gamepad1.left_stick_y - gamepad2.left_stick_y);
+			double turn = (-gamepad1.right_stick_x - gamepad2.right_stick_x);
+//			double heading = drive.localizer.getPose().heading.toDouble();
+			double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+			heading -= Math.PI / 2;
+
+			double cosHeading = Math.cos(heading);
+			double sinHeading = Math.sin(heading);
+
+			telemetry.addData("measured heading: ", heading);
+			telemetry.addData("stick x: ", driveX);
+			telemetry.addData("stick y: ", driveY);
+			telemetry.addData("stick turn: ", turn);
+
+			Vector2d rotatedInput = new Vector2d(
+					driveX * cosHeading + driveY * sinHeading,
+					-driveX * sinHeading + driveY * cosHeading
+			);
+
 			drive.setDrivePowers(
-					new PoseVelocity2d(new Vector2d(
-							(gamepad1.left_stick_y + gamepad2.left_stick_y),
-							(gamepad1.left_stick_x + gamepad2.left_stick_x)),
-							(-gamepad1.right_stick_x - gamepad2.right_stick_x)
-					));
+					new PoseVelocity2d(rotatedInput, turn)
+			);
 
 			drive.updatePoseEstimate();
 
@@ -73,17 +101,23 @@ public class MainTeleop extends LinearOpMode {
 			}
 
 			if (gamepad1.right_bumper || gamepad2.right_bumper) {
-				launching = true;
-			} else {
-				launching = false;
+				launching = launching ? false : true;
+				if (launching) {
+					pushing = false;
+				}
+				while (gamepad1.right_bumper || gamepad2.right_bumper) {}
 			}
+
 			launcher.setPosition(launching ? launchedPos : unlaunchedPos);
+//			double addedLeftTrigger = gamepad1.left_trigger + gamepad2.left_trigger;
+//			launcher.setPower(addedLeftTrigger > 0.2 ? (addedLeftTrigger * launcherMultiplier) : launcherDefault);
+
 
 			if (gamepad1.left_bumper || gamepad2.left_bumper) {
-				pushing = true;
-			} else {
-				pushing = false;
+				pushing = !pushing;
+				while (gamepad1.left_bumper || gamepad2.left_bumper) {}
 			}
+
 			stage2.setPosition(pushing ? stage2Push : stage2Start);
 
 			launcherLeft.setPower(gamepad1.right_trigger+gamepad2.right_trigger);
@@ -97,9 +131,6 @@ public class MainTeleop extends LinearOpMode {
 
 
 			telemetry.update();
-
-			rightBumperWasPressed = gamepad1.right_bumper || gamepad2.right_bumper;
-			leftBumperWaspressed = gamepad1.left_bumper || gamepad2.left_bumper;
 
 
 		}

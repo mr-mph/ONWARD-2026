@@ -12,6 +12,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -31,9 +32,11 @@ public class FieldCentricNew extends LinearOpMode {
 
 
 	public static boolean pushing = false;
+	public static boolean intaking = false;
+
 
 	public static double stage2Start = 0.6;
-	public static double stage2Push = 0.3;
+	public static double stage2Push = 0.2;
 
 
 	@Override
@@ -49,6 +52,8 @@ public class FieldCentricNew extends LinearOpMode {
 		Servo stage2 = hardwareMap.get(Servo.class,"stage2");
 		DcMotorEx launcherLeft = hardwareMap.get(DcMotorEx.class,"launchLeft");
 		DcMotorEx launcherRight = hardwareMap.get(DcMotorEx.class,"launchRight");
+		launcherLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		launcherRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		IMU imu = hardwareMap.get(IMU.class, "imu");
 
 		IMU.Parameters parameters = new IMU.Parameters(
@@ -92,30 +97,28 @@ public class FieldCentricNew extends LinearOpMode {
 
 			drive.updatePoseEstimate();
 
-			if (gamepad1.dpad_left || gamepad2.dpad_left) {
-				intake.setPower(1);
-			} else if (gamepad1.dpad_right || gamepad2.dpad_right) {
-				intake.setPower(-1);
-			} else if (gamepad1.dpad_down || gamepad2.dpad_down) {
-				intake.setPower(0);
-			}
+//			if (gamepad1.dpad_left || gamepad2.dpad_left) {
+//				intake.setPower(1);
+//			} else if (gamepad1.dpad_right || gamepad2.dpad_right) {
+//				intake.setPower(-1);
+//			} else if (gamepad1.dpad_down || gamepad2.dpad_down) {
+//				intake.setPower(0);
+//			}
+
+			intaking = gamepad1.right_trigger + gamepad2.right_trigger > 0.5;
+			intake.setPower(intaking ? -1 : 0);
 
 			if (gamepad1.right_bumper || gamepad2.right_bumper) {
-				launching = launching ? false : true;
-				if (launching) {
-					pushing = false;
-				}
-				while (gamepad1.right_bumper || gamepad2.right_bumper) {}
+				launching = true;
+			} else {
+				launching = false;
 			}
-
 			launcher.setPosition(launching ? launchedPos : unlaunchedPos);
-//			double addedLeftTrigger = gamepad1.left_trigger + gamepad2.left_trigger;
-//			launcher.setPower(addedLeftTrigger > 0.2 ? (addedLeftTrigger * launcherMultiplier) : launcherDefault);
-
 
 			if (gamepad1.left_bumper || gamepad2.left_bumper) {
-				pushing = !pushing;
-				while (gamepad1.left_bumper || gamepad2.left_bumper) {}
+				pushing = true;
+			} else {
+				pushing = false;
 			}
 
 			stage2.setPosition(pushing ? stage2Push : stage2Start);
@@ -135,4 +138,5 @@ public class FieldCentricNew extends LinearOpMode {
 
 		}
 	}
+
 }

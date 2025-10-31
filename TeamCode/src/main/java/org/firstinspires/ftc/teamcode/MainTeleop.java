@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -23,11 +24,14 @@ public class MainTeleop extends LinearOpMode {
 	public static double launcherMultiplier = 0.5;
 	public static double launcherDefault = -0.1;
 
+	public static boolean intaking = false;
+
+
 
 	public static boolean pushing = false;
 
 	public static double stage2Start = 0.6;
-	public static double stage2Push = 0.3;
+	public static double stage2Push = 0.2;
 
 	boolean rightBumperWasPressed = false;
 	boolean leftBumperWaspressed = false;
@@ -46,6 +50,9 @@ public class MainTeleop extends LinearOpMode {
 		Servo stage2 = hardwareMap.get(Servo.class,"stage2");
 		DcMotorEx launcherLeft = hardwareMap.get(DcMotorEx.class,"launchLeft");
 		DcMotorEx launcherRight = hardwareMap.get(DcMotorEx.class,"launchRight");
+		launcherLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		launcherRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
 
 //		launcher.setPosition(unlaunchedPos);
@@ -64,13 +71,8 @@ public class MainTeleop extends LinearOpMode {
 
 			drive.updatePoseEstimate();
 
-			if (gamepad1.dpad_left || gamepad2.dpad_left) {
-				intake.setPower(1);
-			} else if (gamepad1.dpad_right || gamepad2.dpad_right) {
-				intake.setPower(-1);
-			} else if (gamepad1.dpad_down || gamepad2.dpad_down) {
-				intake.setPower(0);
-			}
+			intaking = gamepad1.right_trigger + gamepad2.right_trigger > 0.5;
+			intake.setPower(intaking ? -1 : 0);
 
 			if (gamepad1.right_bumper || gamepad2.right_bumper) {
 				launching = true;

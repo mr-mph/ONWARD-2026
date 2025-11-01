@@ -105,7 +105,7 @@ public class FieldCentricNew extends LinearOpMode {
 //				intake.setPower(0);
 //			}
 
-			intaking = gamepad1.right_trigger + gamepad2.right_trigger > 0.5;
+			intaking = gamepad1.left_trigger + gamepad2.left_trigger > 0.5;
 			intake.setPower(intaking ? -1 : 0);
 
 			if (gamepad1.right_bumper || gamepad2.right_bumper) {

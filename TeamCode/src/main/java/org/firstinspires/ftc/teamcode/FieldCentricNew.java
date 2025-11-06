@@ -4,9 +4,14 @@ import static org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive.PARAMS;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.acmerobotics.roadrunner.ftc.LazyHardwareMapImu;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -26,10 +31,8 @@ public class FieldCentricNew extends LinearOpMode {
 
 	public static boolean launching = false;
 	public static double unlaunchedPos = 0.35;
+	public static double settledPos = 0.6;
 	public static double launchedPos = 1;
-	public static double launcherMultiplier = 0.5;
-	public static double launcherDefault = -0.1;
-
 
 	public static boolean pushing = false;
 	public static boolean intaking = false;
@@ -37,6 +40,8 @@ public class FieldCentricNew extends LinearOpMode {
 
 	public static double stage2Start = 0.6;
 	public static double stage2Push = 0.2;
+
+
 
 
 	@Override
@@ -61,6 +66,41 @@ public class FieldCentricNew extends LinearOpMode {
 		);
 		imu.initialize(parameters);
 		imu.resetYaw();
+
+		SequentialAction launch2Artifacts = new SequentialAction(
+				new InstantAction(()-> {
+					launcherLeft.setPower(1);
+					launcherRight.setPower(-1);
+				}),
+				new SleepAction(1),
+				new SequentialAction(
+						new InstantAction(()-> {
+							stage2.setPosition(stage2Push);
+						}), new SleepAction(1),
+						new InstantAction(()-> {
+							stage2.setPosition(stage2Start);
+							launcher.setPosition(settledPos);
+						})),
+				new SleepAction(1),
+				new SequentialAction(
+						new InstantAction(()-> {
+							launcher.setPosition(launchedPos);
+						}),
+						new SleepAction(1),
+						new InstantAction(()-> {
+							launcher.setPosition(unlaunchedPos);
+						})),
+				new SleepAction(0),
+				new InstantAction(()-> {
+					launcherLeft.setPower(0);
+					launcherRight.setPower(0);
+				})
+		);
+
+		launcher.setPosition(unlaunchedPos);
+		stage2.setPosition(stage2Start);
+
+
 
 
 
@@ -87,8 +127,8 @@ public class FieldCentricNew extends LinearOpMode {
 			telemetry.addData("stick turn: ", turn);
 
 			Vector2d rotatedInput = new Vector2d(
-					driveX * cosHeading + driveY * sinHeading,
-					-driveX * sinHeading + driveY * cosHeading
+					-driveX * cosHeading - driveY * sinHeading,
+					driveX * sinHeading - driveY * cosHeading
 			);
 
 			drive.setDrivePowers(
@@ -97,15 +137,7 @@ public class FieldCentricNew extends LinearOpMode {
 
 			drive.updatePoseEstimate();
 
-//			if (gamepad1.dpad_left || gamepad2.dpad_left) {
-//				intake.setPower(1);
-//			} else if (gamepad1.dpad_right || gamepad2.dpad_right) {
-//				intake.setPower(-1);
-//			} else if (gamepad1.dpad_down || gamepad2.dpad_down) {
-//				intake.setPower(0);
-//			}
-
-			intaking = gamepad1.left_trigger + gamepad2.left_trigger > 0.5;
+			intaking = gamepad1.left_stick_button || gamepad2.left_stick_button;
 			intake.setPower(intaking ? -1 : 0);
 
 			if (gamepad1.right_bumper || gamepad2.right_bumper) {
@@ -123,8 +155,39 @@ public class FieldCentricNew extends LinearOpMode {
 
 			stage2.setPosition(pushing ? stage2Push : stage2Start);
 
+			if(gamepad1.xWasPressed()) Actions.runBlocking(new SequentialAction(
+					new InstantAction(()-> {
+						launcherLeft.setPower(1);
+						launcherRight.setPower(-1);
+					}),
+					new SleepAction(1),
+					new SequentialAction(
+							new InstantAction(()-> {
+								stage2.setPosition(stage2Push);
+							}), new SleepAction(1),
+							new InstantAction(()-> {
+								stage2.setPosition(stage2Start);
+								launcher.setPosition(settledPos);
+							})),
+					new SleepAction(1),
+					new SequentialAction(
+							new InstantAction(()-> {
+								launcher.setPosition(launchedPos);
+							}),
+							new SleepAction(1),
+							new InstantAction(()-> {
+								launcher.setPosition(unlaunchedPos);
+							})),
+					new SleepAction(0),
+					new InstantAction(()-> {
+						launcherLeft.setPower(0);
+						launcherRight.setPower(0);
+					})
+			));
+
 			launcherLeft.setPower(gamepad1.right_trigger+gamepad2.right_trigger);
 			launcherRight.setPower(-gamepad1.right_trigger-gamepad2.right_trigger);
+
 
 			telemetry.addData("launcher power",gamepad1.right_trigger);
 			telemetry.addData("launcher push speed",gamepad1.left_trigger);

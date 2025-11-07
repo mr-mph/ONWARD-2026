@@ -28,6 +28,7 @@ public class SethAuto extends LinearOpMode {
 	public static double unlaunchedPos = 0.35;
 	public static double settledPos = 0.6;
 	public static double launchedPos = 1;
+	public static double launchPower = 0.9;
 
 	public static double stage2Start = 0.6;
 	public static double stage2Push = 0.2;
@@ -102,7 +103,7 @@ public class SethAuto extends LinearOpMode {
 				launcherOff
 		);
 
-		TrajectoryActionBuilder backUp = drive.actionBuilder(new Pose2d(0,0,0))
+		TrajectoryActionBuilder backUp = drive.actionBuilder(new Pose2d(0,0,Math.toDegrees(0)))
 				.strafeTo(new Vector2d(0, -10));
 
 

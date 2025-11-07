@@ -33,6 +33,9 @@ public class FieldCentricNew extends LinearOpMode {
 	public static double unlaunchedPos = 0.35;
 	public static double settledPos = 0.6;
 	public static double launchedPos = 1;
+	public static double launchPower = 0.55;
+	public static double maxPower = 0.85;
+
 
 	public static boolean pushing = false;
 	public static boolean intaking = false;
@@ -40,6 +43,11 @@ public class FieldCentricNew extends LinearOpMode {
 
 	public static double stage2Start = 0.6;
 	public static double stage2Push = 0.2;
+
+
+	public static double WAIT1 = 0.5;
+	public static double WAIT2 = 0.5;
+	public static double WAIT3 = 0;
 
 
 
@@ -66,36 +74,6 @@ public class FieldCentricNew extends LinearOpMode {
 		);
 		imu.initialize(parameters);
 		imu.resetYaw();
-
-		SequentialAction launch2Artifacts = new SequentialAction(
-				new InstantAction(()-> {
-					launcherLeft.setPower(1);
-					launcherRight.setPower(-1);
-				}),
-				new SleepAction(1),
-				new SequentialAction(
-						new InstantAction(()-> {
-							stage2.setPosition(stage2Push);
-						}), new SleepAction(1),
-						new InstantAction(()-> {
-							stage2.setPosition(stage2Start);
-							launcher.setPosition(settledPos);
-						})),
-				new SleepAction(1),
-				new SequentialAction(
-						new InstantAction(()-> {
-							launcher.setPosition(launchedPos);
-						}),
-						new SleepAction(1),
-						new InstantAction(()-> {
-							launcher.setPosition(unlaunchedPos);
-						})),
-				new SleepAction(0),
-				new InstantAction(()-> {
-					launcherLeft.setPower(0);
-					launcherRight.setPower(0);
-				})
-		);
 
 		launcher.setPosition(unlaunchedPos);
 		stage2.setPosition(stage2Start);
@@ -137,7 +115,7 @@ public class FieldCentricNew extends LinearOpMode {
 
 			drive.updatePoseEstimate();
 
-			intaking = gamepad1.left_stick_button || gamepad2.left_stick_button;
+			intaking = gamepad1.left_stick_button || gamepad2.left_stick_button || gamepad1.left_trigger > 0.5 || gamepad2.left_trigger > 0.5;
 			intake.setPower(intaking ? -1 : 0);
 
 			if (gamepad1.right_bumper || gamepad2.right_bumper) {
@@ -157,10 +135,10 @@ public class FieldCentricNew extends LinearOpMode {
 
 			if(gamepad1.xWasPressed()) Actions.runBlocking(new SequentialAction(
 					new InstantAction(()-> {
-						launcherLeft.setPower(1);
-						launcherRight.setPower(-1);
+						launcherLeft.setPower(launchPower);
+						launcherRight.setPower(-launchPower);
 					}),
-					new SleepAction(1),
+					new SleepAction(WAIT1),
 					new SequentialAction(
 							new InstantAction(()-> {
 								stage2.setPosition(stage2Push);
@@ -169,7 +147,7 @@ public class FieldCentricNew extends LinearOpMode {
 								stage2.setPosition(stage2Start);
 								launcher.setPosition(settledPos);
 							})),
-					new SleepAction(1),
+					new SleepAction(WAIT2),
 					new SequentialAction(
 							new InstantAction(()-> {
 								launcher.setPosition(launchedPos);
@@ -178,15 +156,15 @@ public class FieldCentricNew extends LinearOpMode {
 							new InstantAction(()-> {
 								launcher.setPosition(unlaunchedPos);
 							})),
-					new SleepAction(0),
+					new SleepAction(WAIT3),
 					new InstantAction(()-> {
 						launcherLeft.setPower(0);
 						launcherRight.setPower(0);
 					})
 			));
 
-			launcherLeft.setPower(gamepad1.right_trigger+gamepad2.right_trigger);
-			launcherRight.setPower(-gamepad1.right_trigger-gamepad2.right_trigger);
+			launcherLeft.setPower((gamepad1.right_trigger+gamepad2.right_trigger) * maxPower);
+			launcherRight.setPower((-gamepad1.right_trigger-gamepad2.right_trigger) * maxPower);
 
 
 			telemetry.addData("launcher power",gamepad1.right_trigger);

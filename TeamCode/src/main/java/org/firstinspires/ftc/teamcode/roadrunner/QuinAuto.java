@@ -1,11 +1,9 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.roadrunner;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -13,8 +11,6 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -22,27 +18,21 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
 @Config
-@Autonomous(name = "! seth auto", group = "! Auto")
-public class SethAuto extends LinearOpMode {
+@Autonomous(name = "! quin auto", group = "! Auto")
+public class QuinAuto extends LinearOpMode {
 
 	public static double unlaunchedPos = 0.35;
 	public static double settledPos = 0.6;
 	public static double launchedPos = 1;
-	public static double launchPower = 1400;
 
 	public static double stage2Start = 0.6;
 	public static double stage2Push = 0.2;
+	public static double launchPower = 0.6;
 
-	public static double turnAmount = 45;
-
-
-	public static double startAngle = 90;
-	public static double deltaX = -35;
-	public static double deltaY = 60;
 
 	public static double WAIT1 = 1;
-	public static double WAIT2 = 0.5;
-	public static double WAIT3 = 1;
+	public static double WAIT2 = 1;
+	public static double WAIT3 = 0;
 
 	@Override
 	public void runOpMode() {
@@ -51,7 +41,7 @@ public class SethAuto extends LinearOpMode {
 
 		// pinpoint = "launchLeft" encoder
 
-		MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(new Vector2d(0, 0), 90));
+		MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(new Vector2d(18, -63), -90));
 		DcMotorEx intake = hardwareMap.get(DcMotorEx.class,"intake");
 		Servo launcher = hardwareMap.get(Servo.class,"launcher");
 		Servo stage2 = hardwareMap.get(Servo.class,"stage2");
@@ -59,12 +49,9 @@ public class SethAuto extends LinearOpMode {
 		DcMotorEx launcherRight = hardwareMap.get(DcMotorEx.class,"launchRight");
 		launcherLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		launcherRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-		launcherLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-		launcherRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
 		intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+		Pose2d startPos = new Pose2d(56, 7, 90);
 
 //		launcher.setPosition(unlaunchedPos);
 //		stage2.setPosition(stage2Start);
@@ -83,7 +70,7 @@ public class SethAuto extends LinearOpMode {
 				}));
 
 		SequentialAction pushLauncher = new SequentialAction(
-		new InstantAction(()-> {
+				new InstantAction(()-> {
 					launcher.setPosition(launchedPos);
 				}),
 				new SleepAction(1),
@@ -91,33 +78,23 @@ public class SethAuto extends LinearOpMode {
 					launcher.setPosition(unlaunchedPos);
 				}));
 
-		SequentialAction launcherOn = new SequentialAction(
+		SequentialAction launcherOn =  new SequentialAction(
 				new InstantAction(()-> {
-					launcherLeft.setVelocity(launchPower);
-					launcherRight.setVelocity(-launchPower);
+					launcherLeft.setPower(1);
+					launcherRight.setPower(-1);
 				}));
 
 		SequentialAction launcherOff = new SequentialAction(
 				new InstantAction(()-> {
-					launcherLeft.setVelocity(0);
-					launcherRight.setVelocity(0);
+					launcherLeft.setPower(0);
+					launcherRight.setPower(0);
 				}));
 
-//		SequentialAction launch2Artifacts = new SequentialAction(
-//				launcherOn,
-//				new SleepAction(WAIT1),
-//				pushLauncher,
-//				new SleepAction(WAIT2),
-//				loadBall,
-//				new SleepAction(WAIT3),
-//				pushLauncher,
-//				launcherOff
-//		);
 		SequentialAction launch2Artifacts = new SequentialAction(
 				new SequentialAction(
 						new InstantAction(()-> {
-							launcherLeft.setVelocity(launchPower);
-							launcherRight.setVelocity(-launchPower);
+							launcherLeft.setPower(launchPower);
+							launcherRight.setPower(-launchPower);
 						})),
 				new SleepAction(WAIT1),
 				new SequentialAction(
@@ -148,22 +125,72 @@ public class SethAuto extends LinearOpMode {
 						})),
 				new SequentialAction(
 						new InstantAction(()-> {
-							launcherLeft.setVelocity(0);
-							launcherRight.setVelocity(0);
+							launcherLeft.setPower(0);
+							launcherRight.setPower(0);
 						}))
 		);
 
-
-
-		TrajectoryActionBuilder backUp = drive.actionBuilder(new Pose2d(0,0,Math.toDegrees(startAngle)))
-				.strafeTo(new Vector2d(deltaX, deltaY));
-
-		TrajectoryActionBuilder turn = backUp.fresh()
-				.turn(Math.toRadians(turnAmount));
-
+		TrajectoryActionBuilder line1 = drive.actionBuilder(startPos)
+				.strafeTo(new Vector2d(56, 36))
+				.turn(180)
+				.endTrajectory();
+		TrajectoryActionBuilder line2 = line1.fresh()
+				.strafeTo(new Vector2d(14.6, 36))
+				.endTrajectory();
+		TrajectoryActionBuilder line3 = line2.fresh()
+				.strafeTo(new Vector2d(73.3, 63.3))
+				.turn(135)
+				.endTrajectory();
+		TrajectoryActionBuilder line4 = line3.fresh()
+				.strafeTo(new Vector2d(54, 100))
+				.endTrajectory();
+		TrajectoryActionBuilder line5 = line4.fresh()
+				.strafeTo(new Vector2d(53.7, 60))
+				.turn(180)
+				.endTrajectory();
+		TrajectoryActionBuilder line6 = line5.fresh()
+				.strafeTo(new Vector2d(12.6, 60))
+				.endTrajectory();
+		TrajectoryActionBuilder line7 = line6.fresh()
+				.strafeTo(new Vector2d(65.7, 77.7))
+				.turn(135)
+				.endTrajectory();
+		TrajectoryActionBuilder line8 = line7.fresh()
+				.strafeTo(new Vector2d(54, 100))
+				.endTrajectory();
+		TrajectoryActionBuilder line9 = line8.fresh()
+				.strafeTo(new Vector2d(54, 84))
+				.turn(180)
+				.endTrajectory();
+		TrajectoryActionBuilder line10 = line9.fresh()
+				.strafeTo(new Vector2d(11.8, 84))
+				.endTrajectory();
+		TrajectoryActionBuilder line11 = line10.fresh()
+				.strafeTo(new Vector2d(54, 100))
+				.turn(135)
+				.endTrajectory();
 
 		Actions.runBlocking(new SequentialAction(
-				        backUp.build(),launch2Artifacts
+				line1.build(),
+				new InstantAction(() -> {intake.setPower(1);}),
+				line2.build(),
+				new InstantAction(() -> {intake.setPower(0);}),
+				line3.build(),
+				line4.build(),
+				launch2Artifacts,
+				line5.build(),
+				new InstantAction(() -> {intake.setPower(1);}),
+				line6.build(),
+				new InstantAction(() -> {intake.setPower(0);}),
+				line7.build(),
+				line8.build(),
+				launch2Artifacts,
+				line9.build(),
+				new InstantAction(() -> {intake.setPower(1);}),
+				line10.build(),
+				new InstantAction(() -> {intake.setPower(0);}),
+				line11.build(),
+				launch2Artifacts
 		));
 	}
 }

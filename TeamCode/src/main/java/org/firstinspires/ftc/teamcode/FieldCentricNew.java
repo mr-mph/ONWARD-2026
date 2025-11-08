@@ -30,26 +30,11 @@ import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 public class FieldCentricNew extends LinearOpMode {
 
 	public static boolean launching = false;
-	public static double unlaunchedPos = 0.35;
-	public static double settledPos = 0.6;
-	public static double launchedPos = 1;
-	public static double launchPower = 1450;
-	public static double powerMultiplier = 1450;
-
-
 	public static boolean pushing = false;
 	public static boolean intaking = false;
 
 
-	public static double stage2Start = 0.6;
-	public static double stage2Push = 0.2;
-
-
-	public static double WAIT1 = 1;
-	public static double WAIT2 = 0.5;
-	public static double WAIT3 = 1;
-
-
+	public static double powerMultiplier = 1450;
 
 
 	@Override
@@ -78,15 +63,15 @@ public class FieldCentricNew extends LinearOpMode {
 		imu.initialize(parameters);
 		imu.resetYaw();
 
-		launcher.setPosition(unlaunchedPos);
-		stage2.setPosition(stage2Start);
+		launcher.setPosition(LaunchConstants.unlaunchedPos);
+		stage2.setPosition(LaunchConstants.stage2Start);
 
 
 
 
 
-//		launcher.setPosition(unlaunchedPos);
-//		stage2.setPosition(stage2Start);
+//		launcher.setPosition(LaunchConstants.unlaunchedPos);
+//		stage2.setPosition(LaunchConstants.stage2Start);
 		waitForStart();
 
 
@@ -126,7 +111,7 @@ public class FieldCentricNew extends LinearOpMode {
 			} else {
 				launching = false;
 			}
-			launcher.setPosition(launching ? launchedPos : unlaunchedPos);
+			launcher.setPosition(launching ? LaunchConstants.launchedPos : LaunchConstants.unlaunchedPos);
 
 			if (gamepad1.left_bumper || gamepad2.left_bumper) {
 				pushing = true;
@@ -134,40 +119,40 @@ public class FieldCentricNew extends LinearOpMode {
 				pushing = false;
 			}
 
-			stage2.setPosition(pushing ? stage2Push : stage2Start);
+			stage2.setPosition(pushing ? LaunchConstants.stage2Push : LaunchConstants.stage2Start);
 
 			if(gamepad1.xWasPressed()) Actions.runBlocking(new SequentialAction(
 					new SequentialAction(
 							new InstantAction(()-> {
-								launcherLeft.setVelocity(launchPower);
-								launcherRight.setVelocity(-launchPower);
+								launcherLeft.setVelocity(LaunchConstants.launchPower);
+								launcherRight.setVelocity(-LaunchConstants.launchPower);
 							})),
-					new SleepAction(WAIT1),
+					new SleepAction(LaunchConstants.WAIT1),
 					new SequentialAction(
 							new InstantAction(()-> {
-								launcher.setPosition(launchedPos);
+								launcher.setPosition(LaunchConstants.launchedPos);
 							}),
 							new SleepAction(1),
 							new InstantAction(()-> {
-								launcher.setPosition(unlaunchedPos);
+								launcher.setPosition(LaunchConstants.unlaunchedPos);
 							})),
-					new SleepAction(WAIT2),
+					new SleepAction(LaunchConstants.WAIT2),
 					new SequentialAction(
 							new InstantAction(()-> {
-								stage2.setPosition(stage2Push);
+								stage2.setPosition(LaunchConstants.stage2Push);
 							}), new SleepAction(1),
 							new InstantAction(()-> {
-								stage2.setPosition(stage2Start);
-								launcher.setPosition(settledPos);
+								stage2.setPosition(LaunchConstants.stage2Start);
+								launcher.setPosition(LaunchConstants.settledPos);
 							})),
-					new SleepAction(WAIT3),
+					new SleepAction(LaunchConstants.WAIT3),
 					new SequentialAction(
 							new InstantAction(()-> {
-								launcher.setPosition(launchedPos);
+								launcher.setPosition(LaunchConstants.launchedPos);
 							}),
 							new SleepAction(1),
 							new InstantAction(()-> {
-								launcher.setPosition(unlaunchedPos);
+								launcher.setPosition(LaunchConstants.unlaunchedPos);
 							})),
 					new SequentialAction(
 					new InstantAction(()-> {

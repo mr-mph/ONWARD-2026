@@ -23,7 +23,7 @@ public class SethAutoBlue extends LinearOpMode {
 
 	public static double turnAmount = 45;
 
-	public static double deltaX = -35;
+	double deltaX = -LaunchConstants.launchDistance;
 	public static double deltaY = 0;
 
 	@Override
@@ -60,81 +60,101 @@ public class SethAutoBlue extends LinearOpMode {
 		SequentialAction loadBall = new SequentialAction(
 				new InstantAction(()-> {
 					stage2.setPosition(LaunchConstants.stage2Push);
-				}), new SleepAction(1),
+				}), new SleepAction(0.5),
 				new InstantAction(()-> {
 					stage2.setPosition(LaunchConstants.stage2Start);
 					launcher.setPosition(LaunchConstants.settledPos);
-				}));
+				}),new SleepAction(LaunchConstants.settlingTime));
 
 		SequentialAction pushLauncher = new SequentialAction(
-		new InstantAction(()-> {
+				new InstantAction(()-> {
 					launcher.setPosition(LaunchConstants.launchedPos);
 				}),
-				new SleepAction(1),
+				new SleepAction(0.5),
 				new InstantAction(()-> {
 					launcher.setPosition(LaunchConstants.unlaunchedPos);
-				}));
+				}),new SleepAction(0.5));
+		SequentialAction pushLauncher2 = new SequentialAction(
+				new InstantAction(()-> {
+					launcher.setPosition(LaunchConstants.launchedPos);
+				}),
+				new SleepAction(0.5),
+				new InstantAction(()-> {
+					launcher.setPosition(LaunchConstants.unlaunchedPos);
+				}),new SleepAction(0.5));
+		SequentialAction pushLauncher3 = new SequentialAction(
+				new InstantAction(()-> {
+					launcher.setPosition(LaunchConstants.launchedPos);
+				}),
+				new SleepAction(0.5),
+				new InstantAction(()-> {
+					launcher.setPosition(LaunchConstants.unlaunchedPos);
+				}),new SleepAction(0.5));
 
 		SequentialAction launcherOn = new SequentialAction(
 				new InstantAction(()-> {
 					launcherLeft.setVelocity(LaunchConstants.launchPower);
 					launcherRight.setVelocity(-LaunchConstants.launchPower);
-				}));
+				}),new SleepAction(LaunchConstants.warmupTime));
+		SequentialAction launcherOn2 = new SequentialAction(
+				new InstantAction(()-> {
+					launcherLeft.setVelocity(LaunchConstants.launchPower);
+					launcherRight.setVelocity(-LaunchConstants.launchPower);
+				}),new SleepAction(LaunchConstants.warmupTime));;
+		SequentialAction launcherOn3 = new SequentialAction(
+				new InstantAction(()-> {
+					launcherLeft.setVelocity(LaunchConstants.launchPower);
+					launcherRight.setVelocity(-LaunchConstants.launchPower);
+				}),new SleepAction(LaunchConstants.warmupTime));
 
 		SequentialAction launcherOff = new SequentialAction(
 				new InstantAction(()-> {
 					launcherLeft.setVelocity(0);
 					launcherRight.setVelocity(0);
 				}));
+		SequentialAction launcherOff2 = new SequentialAction(
+				new InstantAction(()-> {
+					launcherLeft.setVelocity(0);
+					launcherRight.setVelocity(0);
+				}));
+		SequentialAction launcherOff3 = new SequentialAction(
+				new InstantAction(()-> {
+					launcherLeft.setVelocity(0);
+					launcherRight.setVelocity(0);
+				}));
+
+		SequentialAction settle = new SequentialAction(new SequentialAction(
+				new InstantAction(()-> {
+					launcher.setPosition(LaunchConstants.settledPos);
+				})),new SleepAction(LaunchConstants.settlingTime));
+		SequentialAction settle2 = new SequentialAction(new SequentialAction(
+				new InstantAction(()-> {
+					launcher.setPosition(LaunchConstants.settledPos);
+				})),new SleepAction(LaunchConstants.settlingTime));
 
 //		SequentialAction launch2Artifacts = new SequentialAction(
 //				launcherOn,
-//				new SleepAction(LaunchConstants.WAIT1),
+//				new SleepAction(LaunchConstants.warmupTime),
 //				pushLauncher,
-//				new SleepAction(LaunchConstants.WAIT2),
+//				new SleepAction(LaunchConstants.settlingTime),
 //				loadBall,
-//				new SleepAction(LaunchConstants.WAIT3),
+//				new SleepAction(LaunchConstants.warmupTime),
 //				pushLauncher,
 //				launcherOff
 //		);
 		SequentialAction launch2Artifacts = new SequentialAction(
-				new SequentialAction(
-						new InstantAction(()-> {
-							launcherLeft.setVelocity(LaunchConstants.launchPower);
-							launcherRight.setVelocity(-LaunchConstants.launchPower);
-						})),
-				new SleepAction(LaunchConstants.WAIT1),
-				new SequentialAction(
-						new InstantAction(()-> {
-							launcher.setPosition(LaunchConstants.launchedPos);
-						}),
-						new SleepAction(1),
-						new InstantAction(()-> {
-							launcher.setPosition(LaunchConstants.unlaunchedPos);
-						})),
-				new SleepAction(LaunchConstants.WAIT2),
-				new SequentialAction(
-						new InstantAction(()-> {
-							stage2.setPosition(LaunchConstants.stage2Push);
-						}), new SleepAction(1),
-						new InstantAction(()-> {
-							stage2.setPosition(LaunchConstants.stage2Start);
-							launcher.setPosition(LaunchConstants.settledPos);
-						})),
-				new SleepAction(LaunchConstants.WAIT3),
-				new SequentialAction(
-						new InstantAction(()-> {
-							launcher.setPosition(LaunchConstants.launchedPos);
-						}),
-						new SleepAction(1),
-						new InstantAction(()-> {
-							launcher.setPosition(LaunchConstants.unlaunchedPos);
-						})),
-				new SequentialAction(
-						new InstantAction(()-> {
-							launcherLeft.setVelocity(0);
-							launcherRight.setVelocity(0);
-						}))
+				settle,
+				launcherOn,
+				pushLauncher,
+				launcherOff,
+				settle2,
+				launcherOn2,
+				pushLauncher2,
+				launcherOff2,
+				loadBall,
+				launcherOn3,
+				pushLauncher3,
+				launcherOff3
 		);
 
 

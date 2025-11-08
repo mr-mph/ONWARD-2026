@@ -145,7 +145,7 @@ public class QuinAuto extends LinearOpMode {
 				new InstantAction(() -> {intake.setPower(0);}),
 				line3.build(),
 				line4.build(),
-				launch2Artifacts
+				launch2Artifacts,
 				line5.build(),
 				new InstantAction(() -> {intake.setPower(1);}),
 				line6.build(),

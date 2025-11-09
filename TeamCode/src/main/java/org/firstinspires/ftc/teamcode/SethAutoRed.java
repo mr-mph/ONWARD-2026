@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 @Autonomous(name = "! seth auto (red)", group = "! Auto")
 public class SethAutoRed extends LinearOpMode {
 
-	public static double turnAmount = -45;
+	public static double turnAmount = -40;
 
 	double deltaX = -LaunchConstants.launchDistance;
 	public static double deltaY = 0;
@@ -52,15 +52,21 @@ public class SethAutoRed extends LinearOpMode {
 
 //		launcher.setPosition(LaunchConstants.unlaunchedPos);
 //		stage2.setPosition(stage2Start);
-		launcher.setPosition(LaunchConstants.unlaunchedPos);
+		launcher.setPosition(LaunchConstants.settledPos);
 		stage2.setPosition(LaunchConstants.stage2Start);
 		waitForStart();
 
 
 		SequentialAction loadBall = new SequentialAction(
 				new InstantAction(()-> {
+					intake.setPower(-1);
+				}),
+				new InstantAction(()-> {
 					stage2.setPosition(LaunchConstants.stage2Push);
-				}), new SleepAction(0.5),
+				}), new SleepAction(LaunchConstants.pushTime),
+				new InstantAction(()-> {
+					intake.setPower(0);
+				}),
 				new InstantAction(()-> {
 					stage2.setPosition(LaunchConstants.stage2Start);
 					launcher.setPosition(LaunchConstants.settledPos);

@@ -139,13 +139,18 @@ public class FieldCentricNew extends LinearOpMode {
 					new SleepAction(LaunchConstants.settlingTime),
 					new SequentialAction(
 							new InstantAction(()-> {
+								intake.setPower(-1);
+							}),
+							new InstantAction(()-> {
 								stage2.setPosition(LaunchConstants.stage2Push);
-							}), new SleepAction(1),
+							}), new SleepAction(LaunchConstants.pushTime),
+							new InstantAction(()-> {
+								intake.setPower(0);
+							}),
 							new InstantAction(()-> {
 								stage2.setPosition(LaunchConstants.stage2Start);
 								launcher.setPosition(LaunchConstants.settledPos);
-							})),
-					new SleepAction(LaunchConstants.settlingTime),
+							}),new SleepAction(LaunchConstants.settlingTime)),
 					new SequentialAction(
 							new InstantAction(()-> {
 								launcher.setPosition(LaunchConstants.launchedPos);

@@ -9,8 +9,10 @@ public class LaunchConstants {
 	public static double settledPos = 0.6;
 	public static double launchedPos = 1;
 
-	public static double launchDistance = 40;
+	public static double launchDistance = 8;
 	public static double launchPower = 1430;
+
+	public static double endScoot = 8;
 
 
 

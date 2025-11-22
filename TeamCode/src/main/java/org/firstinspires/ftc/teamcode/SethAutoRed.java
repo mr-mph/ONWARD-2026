@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 @Autonomous(name = "! seth auto (red)", group = "! Auto")
 public class SethAutoRed extends LinearOpMode {
 
-	public static double turnAmount = -40;
+	public static double turnAmount = -45;
 
 	double deltaX = -LaunchConstants.launchDistance;
 	public static double deltaY = 0;
@@ -71,12 +71,30 @@ public class SethAutoRed extends LinearOpMode {
 					stage2.setPosition(LaunchConstants.stage2Start);
 					launcher.setPosition(LaunchConstants.settledPos);
 				}),new SleepAction(LaunchConstants.settlingTime));
+		SequentialAction loadBall2 = new SequentialAction(
+				new InstantAction(()-> {
+					intake.setPower(-1);
+				}),
+				new InstantAction(()-> {
+					stage2.setPosition(LaunchConstants.stage2Push);
+				}), new SleepAction(LaunchConstants.pushTime),
+				new InstantAction(()-> {
+					intake.setPower(0);
+				}),
+				new InstantAction(()-> {
+					stage2.setPosition(LaunchConstants.stage2Start);
+					launcher.setPosition(LaunchConstants.settledPos);
+				}),new SleepAction(LaunchConstants.settlingTime));
 
 		SequentialAction pushLauncher = new SequentialAction(
 				new InstantAction(()-> {
 					launcher.setPosition(LaunchConstants.launchedPos);
 				}),
 				new SleepAction(0.5),
+				new InstantAction(()-> {
+					launcherLeft.setVelocity(0);
+					launcherRight.setVelocity(0);
+				}),
 				new InstantAction(()-> {
 					launcher.setPosition(LaunchConstants.unlaunchedPos);
 				}),new SleepAction(0.5));
@@ -86,6 +104,10 @@ public class SethAutoRed extends LinearOpMode {
 				}),
 				new SleepAction(0.5),
 				new InstantAction(()-> {
+					launcherLeft.setVelocity(0);
+					launcherRight.setVelocity(0);
+				}),
+				new InstantAction(()-> {
 					launcher.setPosition(LaunchConstants.unlaunchedPos);
 				}),new SleepAction(0.5));
 		SequentialAction pushLauncher3 = new SequentialAction(
@@ -93,6 +115,22 @@ public class SethAutoRed extends LinearOpMode {
 					launcher.setPosition(LaunchConstants.launchedPos);
 				}),
 				new SleepAction(0.5),
+				new InstantAction(()-> {
+					launcherLeft.setVelocity(0);
+					launcherRight.setVelocity(0);
+				}),
+				new InstantAction(()-> {
+					launcher.setPosition(LaunchConstants.unlaunchedPos);
+				}),new SleepAction(0.5));
+		SequentialAction pushLauncher4 = new SequentialAction(
+				new InstantAction(()-> {
+					launcher.setPosition(LaunchConstants.launchedPos);
+				}),
+				new SleepAction(0.5),
+				new InstantAction(()-> {
+					launcherLeft.setVelocity(0);
+					launcherRight.setVelocity(0);
+				}),
 				new InstantAction(()-> {
 					launcher.setPosition(LaunchConstants.unlaunchedPos);
 				}),new SleepAction(0.5));
@@ -112,6 +150,11 @@ public class SethAutoRed extends LinearOpMode {
 					launcherLeft.setVelocity(LaunchConstants.launchPower);
 					launcherRight.setVelocity(-LaunchConstants.launchPower);
 				}),new SleepAction(LaunchConstants.warmupTime));
+		SequentialAction launcherOn4 = new SequentialAction(
+				new InstantAction(()-> {
+					launcherLeft.setVelocity(LaunchConstants.launchPower);
+					launcherRight.setVelocity(-LaunchConstants.launchPower);
+				}),new SleepAction(LaunchConstants.warmupTime));
 
 		SequentialAction launcherOff = new SequentialAction(
 				new InstantAction(()-> {
@@ -124,6 +167,11 @@ public class SethAutoRed extends LinearOpMode {
 					launcherRight.setVelocity(0);
 				}));
 		SequentialAction launcherOff3 = new SequentialAction(
+				new InstantAction(()-> {
+					launcherLeft.setVelocity(0);
+					launcherRight.setVelocity(0);
+				}));
+		SequentialAction launcherOff4 = new SequentialAction(
 				new InstantAction(()-> {
 					launcherLeft.setVelocity(0);
 					launcherRight.setVelocity(0);
@@ -153,14 +201,21 @@ public class SethAutoRed extends LinearOpMode {
 				launcherOn,
 				pushLauncher,
 				launcherOff,
+				// 2nd
 				settle2,
 				launcherOn2,
 				pushLauncher2,
 				launcherOff2,
+				// 3rd
 				loadBall,
 				launcherOn3,
 				pushLauncher3,
-				launcherOff3
+				launcherOff3,
+				// 4th
+				loadBall2,
+				launcherOn4,
+				pushLauncher4,
+				launcherOff4
 		);
 
 
@@ -171,9 +226,12 @@ public class SethAutoRed extends LinearOpMode {
 		TrajectoryActionBuilder turn = backUp.fresh()
 				.turn(Math.toRadians(turnAmount));
 
+		TrajectoryActionBuilder leave = turn.fresh()
+				.lineToX(LaunchConstants.endScoot);
+
 
 		Actions.runBlocking(new SequentialAction(
-				backUp.build(),launch2Artifacts, turn.build()
+				backUp.build(),launch2Artifacts, turn.build(), leave.build()
 		));
 	}
 }

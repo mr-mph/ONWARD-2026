@@ -24,6 +24,8 @@ public class SethAutoRed extends LinearOpMode {
 	public static double turnAmount = -45;
 
 	double deltaX = -LaunchConstants.launchDistance;
+	double deltaX2 = -LaunchConstants.secondaryDistance;
+
 	public static double deltaY = 0;
 
 	@Override
@@ -223,7 +225,10 @@ public class SethAutoRed extends LinearOpMode {
 		TrajectoryActionBuilder backUp = drive.actionBuilder(startPos)
 				.strafeTo(new Vector2d(deltaX, deltaY));
 
-		TrajectoryActionBuilder turn = backUp.fresh()
+		TrajectoryActionBuilder backUpAgain = backUp.fresh()
+				.strafeTo(new Vector2d(deltaX2, 0));
+
+		TrajectoryActionBuilder turn = backUpAgain.fresh()
 				.turn(Math.toRadians(turnAmount));
 
 		TrajectoryActionBuilder leave = turn.fresh()
@@ -231,7 +236,7 @@ public class SethAutoRed extends LinearOpMode {
 
 
 		Actions.runBlocking(new SequentialAction(
-				backUp.build(),launch2Artifacts, turn.build(), leave.build()
+				backUp.build(),launch2Artifacts, backUpAgain.build(), turn.build(), leave.build()
 		));
 	}
 }

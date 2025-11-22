@@ -50,7 +50,7 @@ public class MainTeleop extends LinearOpMode {
 
 		double multiplicity = LaunchConstants.multiplicity;
 
-		boolean isMultiplying = false;
+
 
 
 		waitForStart();
@@ -86,8 +86,8 @@ public class MainTeleop extends LinearOpMode {
 			}
 			stage2.setPosition(pushing ? stage2Push : stage2Start);
 
-			launcherLeft.setPower(isMultiplying ? (gamepad1.right_trigger+gamepad2.right_trigger) * multiplicity : gamepad1.right_trigger+gamepad2.right_trigger);
-			launcherRight.setPower(isMultiplying ? (-gamepad1.right_trigger-gamepad2.right_trigger) * multiplicity : -gamepad1.right_trigger-gamepad2.right_trigger);
+			launcherLeft.setPower(gamepad1.right_trigger+gamepad2.right_trigger);
+			launcherRight.setPower(-gamepad1.right_trigger-gamepad2.right_trigger);
 
 			telemetry.addData("launcher power",gamepad1.right_trigger);
 			telemetry.addData("launcher push speed",gamepad1.left_trigger);
@@ -100,8 +100,6 @@ public class MainTeleop extends LinearOpMode {
 
 			rightBumperWasPressed = gamepad1.right_bumper || gamepad2.right_bumper;
 			leftBumperWasPressed = gamepad1.left_bumper || gamepad2.left_bumper;
-
-			isMultiplying = gamepad1.a || gamepad2.a;
 		}
 	}
 }

@@ -33,7 +33,7 @@ public class FieldCentricNew extends LinearOpMode {
 	public static boolean pushing = false;
 	public static boolean intaking = false;
 
-
+	boolean isMultiplying = false;
 	public static double powerMultiplier = 1450;
 
 
@@ -65,6 +65,8 @@ public class FieldCentricNew extends LinearOpMode {
 
 		launcher.setPosition(LaunchConstants.unlaunchedPos);
 		stage2.setPosition(LaunchConstants.stage2Start);
+
+		double multiplicity = LaunchConstants.multiplicity;
 
 
 
@@ -168,20 +170,20 @@ public class FieldCentricNew extends LinearOpMode {
 					}))
 			));
 
-			launcherLeft.setVelocity((gamepad1.right_trigger+gamepad2.right_trigger) * powerMultiplier);
-			launcherRight.setVelocity(-(gamepad1.right_trigger+gamepad2.right_trigger) * powerMultiplier);
+			launcherLeft.setVelocity(isMultiplying ? (gamepad1.right_trigger+gamepad2.right_trigger) * powerMultiplier * multiplicity : (gamepad1.right_trigger+gamepad2.right_trigger) * powerMultiplier);
+			launcherRight.setVelocity(isMultiplying ? -(gamepad1.right_trigger+gamepad2.right_trigger) * powerMultiplier * multiplicity : -(gamepad1.right_trigger+gamepad2.right_trigger) * powerMultiplier);
 
+			isMultiplying = gamepad1.a || gamepad2.a;
 
 			telemetry.addData("launcher power",gamepad1.right_trigger);
 			telemetry.addData("launcher push speed",gamepad1.left_trigger);
 
 			telemetry.addData("launcher launching (up?)",launching);
 			telemetry.addData("pusher pushing (out?)",pushing);
+			telemetry.addData("multiplying?",isMultiplying);
 
 
 			telemetry.update();
-
-
 		}
 	}
 

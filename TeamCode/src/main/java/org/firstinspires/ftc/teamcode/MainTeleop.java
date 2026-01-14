@@ -2,17 +2,11 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -35,7 +29,7 @@ public class MainTeleop extends LinearOpMode {
 	public static double stage2Push = 0.2;
 
 	boolean rightBumperWasPressed = false;
-	boolean leftBumperWaspressed = false;
+	boolean leftBumperWasPressed = false;
 
 
 	@Override
@@ -54,6 +48,10 @@ public class MainTeleop extends LinearOpMode {
 		launcherLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		launcherRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+		double multiplicity = LaunchConstants.multiplicity;
+
+
+
 
 		waitForStart();
 
@@ -71,6 +69,8 @@ public class MainTeleop extends LinearOpMode {
 
 			intaking = gamepad1.left_stick_button || gamepad2.left_stick_button;
 			intake.setPower(intaking ? -1 : 0);
+
+
 
 			if (gamepad1.right_bumper || gamepad2.right_bumper) {
 				launching = true;
@@ -99,9 +99,7 @@ public class MainTeleop extends LinearOpMode {
 			telemetry.update();
 
 			rightBumperWasPressed = gamepad1.right_bumper || gamepad2.right_bumper;
-			leftBumperWaspressed = gamepad1.left_bumper || gamepad2.left_bumper;
-
-
+			leftBumperWasPressed = gamepad1.left_bumper || gamepad2.left_bumper;
 		}
 	}
 }

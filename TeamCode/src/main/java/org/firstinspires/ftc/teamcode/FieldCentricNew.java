@@ -136,7 +136,8 @@ public class FieldCentricNew extends LinearOpMode {
 							new InstantAction(()-> {
 								launcher.setPosition(LaunchConstants.unlaunchedPos);
 							})),
-					new SleepAction(LaunchConstants.settlingTime),
+					// 2nd ball
+//					new SleepAction(LaunchConstants.settlingTime),
 					new SequentialAction(
 							new InstantAction(()-> {
 								intake.setPower(-1);
@@ -148,11 +149,12 @@ public class FieldCentricNew extends LinearOpMode {
 								intake.setPower(0);
 							}),
 							new InstantAction(()-> {
-								stage2.setPosition(LaunchConstants.stage2Start);
-								launcher.setPosition(LaunchConstants.settledPos);
+//								stage2.setPosition(LaunchConstants.stage2Start);
+//								launcher.setPosition(LaunchConstants.settledPos);
 							}),new SleepAction(LaunchConstants.settlingTime)),
 					new SequentialAction(
 							new InstantAction(()-> {
+								stage2.setPosition(LaunchConstants.stage2Start); // new
 								launcher.setPosition(LaunchConstants.launchedPos);
 							}),
 							new SleepAction(1),

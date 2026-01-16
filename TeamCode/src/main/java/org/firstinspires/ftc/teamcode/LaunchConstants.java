@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 public class LaunchConstants {
 
 	public static double unlaunchedPos = 0.35;
-	public static double settledPos = 0.6;
+	public static double settledPos = 0.35;
 	public static double launchedPos = 1;
 
 	public static double launchDistance = 10;
@@ -21,7 +21,7 @@ public class LaunchConstants {
 
 
 	public static double stage2Start = 0.6;
-	public static double stage2Push = 0.3;
+	public static double stage2Push = 0.2;
 
 
 

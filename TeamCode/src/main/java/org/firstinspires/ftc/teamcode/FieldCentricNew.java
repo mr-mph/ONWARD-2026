@@ -81,7 +81,7 @@ public class FieldCentricNew extends LinearOpMode {
 
 			double driveX = ( gamepad1.left_stick_x + gamepad2.left_stick_x);
 			double driveY = (- gamepad1.left_stick_y - gamepad2.left_stick_y);
-			double turn = (-gamepad1.right_stick_x - gamepad2.right_stick_x);
+			double turn = (gamepad1.right_stick_x + gamepad2.right_stick_x);
 //			double heading = drive.localizer.getPose().heading.toDouble();
 			double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 			heading -= Math.PI / 2;
@@ -105,7 +105,11 @@ public class FieldCentricNew extends LinearOpMode {
 
 			drive.updatePoseEstimate();
 
-			intaking = gamepad1.left_stick_button || gamepad2.left_stick_button || gamepad1.left_trigger > 0.5 || gamepad2.left_trigger > 0.5;
+			if (gamepad1.left_stick_button || gamepad2.left_stick_button || gamepad1.left_trigger > 0.5 || gamepad2.left_trigger > 0.5) {
+				intaking = !intaking;
+				while (gamepad1.left_stick_button || gamepad2.left_stick_button || gamepad1.left_trigger > 0.5 || gamepad2.left_trigger > 0.5) {}
+			}
+
 			intake.setPower(intaking ? -1 : 0);
 
 			if (gamepad1.right_bumper || gamepad2.right_bumper) {

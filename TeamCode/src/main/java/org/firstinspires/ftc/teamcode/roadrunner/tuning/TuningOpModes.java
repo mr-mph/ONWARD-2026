@@ -46,6 +46,9 @@ import org.firstinspires.ftc.teamcode.roadrunner.PinpointLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.TankDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.TwoDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.roadrunner.tuning.LocalizationTest;
+import org.firstinspires.ftc.teamcode.roadrunner.tuning.ManualFeedbackTuner;
+import org.firstinspires.ftc.teamcode.roadrunner.tuning.SplineTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,11 +73,6 @@ public final class TuningOpModes {
 
     private static PinpointView makePinpointView(PinpointLocalizer pl) {
         return new PinpointView() {
-            @Override
-            public float getHeadingVelocity() {
-                return (float) pl.driver.getHeadingVelocity(UnnormalizedAngleUnit.RADIANS);
-            }
-
             GoBildaPinpointDriver.EncoderDirection parDirection = pl.initialParDirection;
             GoBildaPinpointDriver.EncoderDirection perpDirection = pl.initialPerpDirection;
 
@@ -91,6 +89,11 @@ public final class TuningOpModes {
             @Override
             public int getPerpEncoderPosition() {
                 return pl.driver.getEncoderY();
+            }
+
+            @Override
+            public float getHeadingVelocity(UnnormalizedAngleUnit unit) {
+                return (float) pl.driver.getHeadingVelocity(unit);
             }
 
             @Override
@@ -180,7 +183,7 @@ public final class TuningOpModes {
                 }
 
                 return new DriveView(
-                    DriveType.MECANUM,
+                        DriveType.MECANUM,
                         MecanumDrive.PARAMS.inPerTick,
                         MecanumDrive.PARAMS.maxWheelVel,
                         MecanumDrive.PARAMS.minProfileAccel,

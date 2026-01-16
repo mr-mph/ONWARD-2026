@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.SimpleMecanumDrive;
 
 @Config
-@TeleOp(name = "!Original teleop by Seth", group = "! Teleop")
+@TeleOp(name = "!Nathan teleop", group = "! Teleop")
 public class NathanTest extends LinearOpMode {
 
 

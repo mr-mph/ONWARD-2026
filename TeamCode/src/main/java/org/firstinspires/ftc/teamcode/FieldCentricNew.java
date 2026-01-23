@@ -35,6 +35,16 @@ public class FieldCentricNew extends LinearOpMode {
 
 	boolean isMultiplying = false;
 	public static double powerMultiplier = 1450;
+	public static double turnMultiplier = 0.5;
+
+
+	public static double DRIVE_CURVE = 0.7;
+	public static  double TURN_CURVE  = 0.8;
+
+	public static double DRIVE_MIN  = 0.10; // forward/back
+	public static double STRAFE_MIN = 0.15; // mecanum strafe
+	public static double TURN_MIN   = 0.08;
+
 
 
 	@Override
@@ -44,7 +54,7 @@ public class FieldCentricNew extends LinearOpMode {
 
 		// pinpoint = "launchLeft" encoder
 
-		MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(new Vector2d(18, -63), -90));
+		MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(new Vector2d(0, 0), -90));
 		DcMotorEx intake = hardwareMap.get(DcMotorEx.class,"intake");
 		Servo launcher = hardwareMap.get(Servo.class,"launcher");
 		Servo stage2 = hardwareMap.get(Servo.class,"stage2");
@@ -55,6 +65,9 @@ public class FieldCentricNew extends LinearOpMode {
 
 		launcherLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		launcherRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+		intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 		IMU imu = hardwareMap.get(IMU.class, "imu");
 
 		IMU.Parameters parameters = new IMU.Parameters(
@@ -70,8 +83,6 @@ public class FieldCentricNew extends LinearOpMode {
 
 
 
-
-
 //		launcher.setPosition(LaunchConstants.unlaunchedPos);
 //		stage2.setPosition(LaunchConstants.stage2Start);
 		waitForStart();
@@ -79,12 +90,18 @@ public class FieldCentricNew extends LinearOpMode {
 
 		while (!isStopRequested()) {
 
+
+
 			double driveX = ( gamepad1.left_stick_x + gamepad2.left_stick_x);
 			double driveY = (- gamepad1.left_stick_y - gamepad2.left_stick_y);
 			double turn = (gamepad1.right_stick_x + gamepad2.right_stick_x);
 //			double heading = drive.localizer.getPose().heading.toDouble();
 			double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 			heading -= Math.PI / 2;
+
+			driveX = process(driveX, DRIVE_CURVE, STRAFE_MIN);
+			driveY = process(driveY, DRIVE_CURVE, DRIVE_MIN);
+			turn   = process(turn,   TURN_CURVE,  TURN_MIN);
 
 			double cosHeading = Math.cos(heading);
 			double sinHeading = Math.sin(heading);
@@ -100,7 +117,7 @@ public class FieldCentricNew extends LinearOpMode {
 			);
 
 			drive.setDrivePowers(
-					new PoseVelocity2d(rotatedInput, turn)
+					new PoseVelocity2d(rotatedInput, -turn)
 			);
 
 			drive.updatePoseEstimate();
@@ -189,6 +206,23 @@ public class FieldCentricNew extends LinearOpMode {
 
 			telemetry.update();
 		}
+	}
+
+	// chatgpt code
+
+	double curve(double x, double a) {
+		return a * x * x * x + (1.0 - a) * x;
+	}
+
+	double applyMinPower(double x, double min) {
+		if (Math.abs(x) < 1e-4) return 0.0;
+		return Math.signum(x) * (min + (1.0 - min) * Math.abs(x));
+	}
+
+	double process(double x, double curve, double min) {
+		x = curve(x, curve);
+		x = applyMinPower(x, min);
+		return x;
 	}
 
 }

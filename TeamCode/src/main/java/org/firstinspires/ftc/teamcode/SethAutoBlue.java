@@ -35,7 +35,7 @@ public class SethAutoBlue extends LinearOpMode {
 
 		// pinpoint = "launchLeft" encoder
 
-		Pose2d startPos = new Pose2d(new Vector2d(0,0), Math.toRadians(0));
+		Pose2d startPos = new Pose2d(new Vector2d(0,0), Math.toRadians(180));
 
 		MecanumDrive drive = new MecanumDrive(hardwareMap, startPos);
 		DcMotorEx intake = hardwareMap.get(DcMotorEx.class,"intake");
@@ -57,7 +57,6 @@ public class SethAutoBlue extends LinearOpMode {
 		launcher.setPosition(LaunchConstants.settledPos);
 		stage2.setPosition(LaunchConstants.stage2Start);
 		waitForStart();
-
 
 		SequentialAction loadBall = new SequentialAction(
 				new InstantAction(()-> {

@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
-@Autonomous(name = "!! 3 Specimen Close Auto ", group = "! Auto")
+@Autonomous(name = "test auto thing", group = "! Auto")
 public class CloseAuto2 extends LinearOpMode
 
 {

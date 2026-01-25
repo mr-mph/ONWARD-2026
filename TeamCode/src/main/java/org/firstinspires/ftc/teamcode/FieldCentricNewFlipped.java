@@ -26,8 +26,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
 @Config
-@TeleOp(name = "!Field centric main teleop by Seth", group = "! Teleop")
-public class FieldCentricNew extends LinearOpMode {
+@TeleOp(name = "!Flipped Field centric main teleop by Seth", group = "! Teleop")
+public class FieldCentricNewFlipped extends LinearOpMode {
 
 	public static boolean launching = false;
 	public static boolean pushing = false;
@@ -108,7 +108,7 @@ public class FieldCentricNew extends LinearOpMode {
 			telemetry.addData("raw heading: ", heading);
 
 			heading -= Math.PI / 2;
-//			heading -= Math.PI;
+			heading -= Math.PI;
 
 
 			driveX = process(driveX, DRIVE_CURVE, STRAFE_MIN);
@@ -207,10 +207,10 @@ public class FieldCentricNew extends LinearOpMode {
 								launcher.setPosition(LaunchConstants.unlaunchedPos);
 							})),
 					new SequentialAction(
-					new InstantAction(()-> {
-						launcherLeft.setVelocity(0);
-						launcherRight.setVelocity(0);
-					}))
+							new InstantAction(()-> {
+								launcherLeft.setVelocity(0);
+								launcherRight.setVelocity(0);
+							}))
 			));
 
 			if (gamepad1.ps || gamepad2.ps) {

@@ -29,7 +29,7 @@ public class LaunchConstants {
 
 
 	public static double warmupTime = 0.3;
-	public static double settlingTime = 1;
-	public static double pushTime = 1.5;
+	public static double settlingTime = 0;
+	public static double pushTime = 0.5;
 	public static double launchTime = 0.5;
 }

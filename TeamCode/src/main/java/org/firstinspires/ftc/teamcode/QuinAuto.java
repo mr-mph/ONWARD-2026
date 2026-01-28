@@ -79,7 +79,7 @@ public class QuinAuto extends LinearOpMode {
 		// ---------- Auto ----------
 		Actions.runBlocking(new SequentialAction(
 				line1,
-				shootN(4),
+				shootN(3),
 
 				line2,
 				intakeOn(),
@@ -87,7 +87,7 @@ public class QuinAuto extends LinearOpMode {
 				intakeOff(),
 
 				line4,
-				shootN(4),
+				shootN(3),
 
 				line5,
 				intakeOn(),
@@ -149,8 +149,9 @@ public class QuinAuto extends LinearOpMode {
 
 	private Action pushLauncher(boolean lastShot) {
 		return new SequentialAction(
-				new InstantAction(() ->
-						launcher.setPosition(LaunchConstants.launchedPos)),
+				new InstantAction(() -> {
+						launcher.setPosition(LaunchConstants.launchedPos);
+						stage2.setPosition(LaunchConstants.stage2Start);}),
 				new SleepAction(LaunchConstants.launchTime),
 				new InstantAction(() ->
 						launcher.setPosition(LaunchConstants.unlaunchedPos)),
@@ -162,7 +163,7 @@ public class QuinAuto extends LinearOpMode {
 		List<Action> actions = new ArrayList<>();
 
 		for (int i = 0; i < count; i++) {
-			if (i >= 2) {
+			if (i >= 1) {
 				actions.add(loadBall());
 			}
 			actions.add(settle());

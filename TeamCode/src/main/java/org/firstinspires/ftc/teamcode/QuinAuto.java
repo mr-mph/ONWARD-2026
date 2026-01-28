@@ -49,49 +49,46 @@ public class QuinAuto extends LinearOpMode {
 
 		waitForStart();
 
-		Action line1 = drive.actionBuilder(startPos)
-				.strafeTo(new Vector2d(-34.5, -33.1))
-				.build();
+		TrajectoryActionBuilder line1 = drive.actionBuilder(startPos) // backup to shoot
+				.strafeTo(new Vector2d(-36.9,-29.8))
+				.endTrajectory();
 
-		Action line2 = drive.actionBuilder(new Pose2d(-34.5, -33.1, Math.toRadians(54)))
-				.strafeTo(new Vector2d(-17, -17.8))
-				.turnTo(Math.toRadians(-90))
-				.build();
+		TrajectoryActionBuilder line2 = line1.fresh() // primary
+				.strafeToLinearHeading(new Vector2d(-16, -15.8), Math.toRadians(-90))
+				.endTrajectory();
 
-		Action line3 = drive.actionBuilder(new Pose2d(-17, -17.8, Math.toRadians(-90)))
-				.strafeTo(new Vector2d(-17, -47.3))
-				.build();
+		TrajectoryActionBuilder line3 = line2.fresh() // go through
+				.strafeTo(new Vector2d(-16, -47.3))
+				.endTrajectory();
 
-		Action line4 = drive.actionBuilder(new Pose2d(-17, -47.3, Math.toRadians(-90)))
-				.strafeTo(new Vector2d(-34.5, -33.1))
-				.turnTo(Math.toRadians(54))
-				.build();
+		TrajectoryActionBuilder line4 = line3.fresh() // go to shoot pos
+				.strafeToLinearHeading(new Vector2d(-36.5, -28.9), Math.toRadians(54))
+				.endTrajectory();
 
-		Action line5 = drive.actionBuilder(new Pose2d(-34.5, -33.1, Math.toRadians(54)))
-				.strafeTo(new Vector2d(13, -17.8))
-				.turnTo(Math.toRadians(-90))
-				.build();
+		TrajectoryActionBuilder line5 = line4.fresh() // primary
+				.strafeToLinearHeading(new Vector2d(6, -15.8), Math.toRadians(-90))
+				.endTrajectory();
 
-		Action line6 = drive.actionBuilder(new Pose2d(13, -17.8, Math.toRadians(-90)))
-				.strafeTo(new Vector2d(12, -47.3))
-				.build();
+		TrajectoryActionBuilder line6 = line5.fresh() // go through
+				.strafeTo(new Vector2d(6, -47.3))
+				.endTrajectory();
 
 		// ---------- Auto ----------
 		Actions.runBlocking(new SequentialAction(
-				line1,
+				line1.build(),
 				shootN(3),
 
-				line2,
+				line2.build(),
 				intakeOn(),
-				line3,
+				line3.build(),
 				intakeOff(),
 
-				line4,
+				line4.build(),
 				shootN(3),
 
-				line5,
+				line5.build(),
 				intakeOn(),
-				line6,
+				line6.build(),
 				intakeOff()
 		));
 	}
@@ -150,8 +147,10 @@ public class QuinAuto extends LinearOpMode {
 	private Action pushLauncher(boolean lastShot) {
 		return new SequentialAction(
 				new InstantAction(() -> {
-						launcher.setPosition(LaunchConstants.launchedPos);
-						stage2.setPosition(LaunchConstants.stage2Start);}),
+						launcher.setPosition(LaunchConstants.launchedPos);}),
+				new SleepAction(LaunchConstants.settlingTime),
+				new InstantAction(() -> {
+					stage2.setPosition(LaunchConstants.stage2Start);}),
 				new SleepAction(LaunchConstants.launchTime),
 				new InstantAction(() ->
 						launcher.setPosition(LaunchConstants.unlaunchedPos)),

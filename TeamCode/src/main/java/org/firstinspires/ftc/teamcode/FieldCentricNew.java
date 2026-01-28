@@ -144,7 +144,7 @@ public class FieldCentricNew extends LinearOpMode {
 
 			stage2.setPosition(pushing ? LaunchConstants.stage2Push : LaunchConstants.stage2Start);
 
-			if(gamepad1.xWasPressed()) Actions.runBlocking(new SequentialAction(
+			if(gamepad1.xWasPressed() || gamepad2.xWasPressed()) Actions.runBlocking(new SequentialAction(
 					new SequentialAction(
 							new InstantAction(()-> {
 								launcherLeft.setVelocity(LaunchConstants.launchPower);
@@ -165,6 +165,7 @@ public class FieldCentricNew extends LinearOpMode {
 							new InstantAction(()-> {
 								intake.setPower(-1);
 							}),
+							new SleepAction(1f),
 							new InstantAction(()-> {
 								stage2.setPosition(LaunchConstants.stage2Push);
 							}), new SleepAction(LaunchConstants.pushTime),

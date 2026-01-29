@@ -76,16 +76,15 @@ public class FieldCentricNew extends LinearOpMode {
 		imu.initialize(parameters);
 		imu.resetYaw();
 
-		launcher.setPosition(LaunchConstants.unlaunchedPos);
-		stage2.setPosition(LaunchConstants.stage2Start);
 
 		double multiplicity = LaunchConstants.multiplicity;
 
 
 
-//		launcher.setPosition(LaunchConstants.unlaunchedPos);
-//		stage2.setPosition(LaunchConstants.stage2Start);
 		waitForStart();
+
+		launcher.setPosition(LaunchConstants.unlaunchedPos);
+		stage2.setPosition(LaunchConstants.stage2Start);
 
 
 		while (!isStopRequested()) {

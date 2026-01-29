@@ -50,27 +50,31 @@ public class QuinAuto extends LinearOpMode {
 		waitForStart();
 
 		TrajectoryActionBuilder line1 = drive.actionBuilder(startPos) // backup to shoot
-				.strafeTo(new Vector2d(-36.9,-29.8))
+				.strafeTo(new Vector2d(-42,-39))
 				.endTrajectory();
 
-		TrajectoryActionBuilder line2 = line1.fresh() // primary
-				.strafeToLinearHeading(new Vector2d(-16, -15.8), Math.toRadians(-90))
+		TrajectoryActionBuilder line2 = drive.actionBuilder(startPos) // backup to not knock balls
+				.strafeTo(new Vector2d(-43.7,-28.8))
 				.endTrajectory();
 
-		TrajectoryActionBuilder line3 = line2.fresh() // go through
-				.strafeTo(new Vector2d(-16, -47.3))
+		TrajectoryActionBuilder line3 = line2.fresh() // primary
+				.strafeToLinearHeading(new Vector2d(-13, -25), Math.toRadians(-90))
 				.endTrajectory();
 
-		TrajectoryActionBuilder line4 = line3.fresh() // go to shoot pos
-				.strafeToLinearHeading(new Vector2d(-36.5, -28.9), Math.toRadians(54))
+		TrajectoryActionBuilder line4 = line3.fresh() // go through
+				.strafeTo(new Vector2d(-13, -47.3))
 				.endTrajectory();
 
-		TrajectoryActionBuilder line5 = line4.fresh() // primary
-				.strafeToLinearHeading(new Vector2d(6, -15.8), Math.toRadians(-90))
+		TrajectoryActionBuilder line5 = line4.fresh() // go to shoot pos
+				.strafeToLinearHeading(new Vector2d(-42, -39), Math.toRadians(54))
 				.endTrajectory();
 
-		TrajectoryActionBuilder line6 = line5.fresh() // go through
-				.strafeTo(new Vector2d(6, -47.3))
+		TrajectoryActionBuilder line6 = line5.fresh() // primary
+				.strafeToLinearHeading(new Vector2d(11, -25.8), Math.toRadians(-90))
+				.endTrajectory();
+
+		TrajectoryActionBuilder line7 = line6.fresh() // go through
+				.strafeTo(new Vector2d(11, -47.3))
 				.endTrajectory();
 
 		// ---------- Auto ----------
@@ -79,16 +83,17 @@ public class QuinAuto extends LinearOpMode {
 				shootN(3),
 
 				line2.build(),
-				intakeOn(),
 				line3.build(),
+				intakeOn(),
+				line4.build(),
 				intakeOff(),
 
-				line4.build(),
+				line5.build(),
 				shootN(3),
 
-				line5.build(),
-				intakeOn(),
 				line6.build(),
+				intakeOn(),
+				line7.build(),
 				intakeOff()
 		));
 	}

@@ -35,7 +35,7 @@ public class MeepMeepTest {
 				.strafeTo(new Vector2d(-42,-39))
 				.endTrajectory();
 
-		TrajectoryActionBuilder line2 = drive.actionBuilder(startPos) // backup to not knock balls
+		TrajectoryActionBuilder line2 = line1.fresh() // backup to not knock balls
 				.strafeTo(new Vector2d(-43.7,-28.8))
 				.endTrajectory();
 

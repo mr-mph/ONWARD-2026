@@ -62,7 +62,7 @@ public class QuinAutoRed extends LinearOpMode {
 		waitForStart();
 
 
-		TrajectoryActionBuilder line1 = drive.actionBuilder(startPos) // backup to shoot
+		TrajectoryActionBuilder line1 = drive.mirroredActionBuilder(startPos) // backup to shoot
 				.strafeTo(new Vector2d(-42,-39))
 				.endTrajectory();
 

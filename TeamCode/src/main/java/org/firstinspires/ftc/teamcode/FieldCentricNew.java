@@ -123,10 +123,12 @@ public class FieldCentricNew extends LinearOpMode {
 
 			drive.updatePoseEstimate();
 
-			if (gamepad1.left_stick_button || gamepad2.left_stick_button || gamepad1.left_trigger > 0.5 || gamepad2.left_trigger > 0.5) {
-				intaking = !intaking;
-				while (gamepad1.left_stick_button || gamepad2.left_stick_button || gamepad1.left_trigger > 0.5 || gamepad2.left_trigger > 0.5) {}
-			}
+//			if (gamepad1.left_stick_button || gamepad2.left_stick_button || gamepad1.left_trigger > 0.5 || gamepad2.left_trigger > 0.5) {
+//				intaking = !intaking;
+//				while (gamepad1.left_stick_button || gamepad2.left_stick_button || gamepad1.left_trigger > 0.5 || gamepad2.left_trigger > 0.5) {}
+//			}
+
+			intaking = gamepad1.left_stick_button || gamepad2.left_stick_button || gamepad1.left_trigger > 0.5 || gamepad2.left_trigger > 0.5;
 
 			intake.setPower(intaking ? -1 : 0);
 
@@ -193,10 +195,14 @@ public class FieldCentricNew extends LinearOpMode {
 					}))
 			));
 
-			propMotor.setVelocity((gamepad1.dpad_left ? 1 : 0) * propupPower);
-			launcherLeft.setVelocity(isMultiplying ? (gamepad1.right_trigger+gamepad2.right_trigger) * powerMultiplier * multiplicity : (gamepad1.right_trigger+gamepad2.right_trigger) * powerMultiplier);
-			launcherRight.setVelocity(isMultiplying ? -(gamepad1.right_trigger+gamepad2.right_trigger) * powerMultiplier * multiplicity : -(gamepad1.right_trigger+gamepad2.right_trigger) * powerMultiplier);
-
+//			propMotor.setVelocity((gamepad1.dpad_left ? 1 : 0) * propupPower);
+			if (gamepad1.ps || gamepad2.ps) {
+				launcherLeft.setVelocity(-500);
+				launcherRight.setVelocity(500);
+			} else {
+				launcherLeft.setVelocity(isMultiplying ? (gamepad1.right_trigger + gamepad2.right_trigger) * powerMultiplier * multiplicity : (gamepad1.right_trigger + gamepad2.right_trigger) * powerMultiplier);
+				launcherRight.setVelocity(isMultiplying ? -(gamepad1.right_trigger + gamepad2.right_trigger) * powerMultiplier * multiplicity : -(gamepad1.right_trigger + gamepad2.right_trigger) * powerMultiplier);
+			}
 			isMultiplying = gamepad1.a || gamepad2.a;
 
 			telemetry.addData("launcher power",gamepad1.right_trigger);

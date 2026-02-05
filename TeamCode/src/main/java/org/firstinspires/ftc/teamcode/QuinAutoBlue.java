@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Config
-@Autonomous(name = "! quin auto", group = "! Auto")
+@Autonomous(name = "! quin blue auto", group = "! Auto")
 public class QuinAutoBlue extends LinearOpMode {
 
 	DcMotorEx intake, launcherLeft, launcherRight;
@@ -54,15 +54,15 @@ public class QuinAutoBlue extends LinearOpMode {
 				.endTrajectory();
 
 		TrajectoryActionBuilder line2 = line1.fresh() // backup to not knock balls
-				.strafeTo(new Vector2d(-43.7,-28.8))
+				.strafeTo(new Vector2d(-43.7,-22))
 				.endTrajectory();
 
 		TrajectoryActionBuilder line3 = line2.fresh() // primary
-				.strafeToLinearHeading(new Vector2d(-13, -25), Math.toRadians(-90))
+				.strafeToLinearHeading(new Vector2d(-14, -22), Math.toRadians(-90))
 				.endTrajectory();
 
 		TrajectoryActionBuilder line4 = line3.fresh() // go through
-				.strafeTo(new Vector2d(-13, -47.3))
+				.strafeTo(new Vector2d(-14, -50))
 				.endTrajectory();
 
 		TrajectoryActionBuilder line5 = line4.fresh() // go to shoot pos
@@ -70,11 +70,11 @@ public class QuinAutoBlue extends LinearOpMode {
 				.endTrajectory();
 
 		TrajectoryActionBuilder line6 = line5.fresh() // primary
-				.strafeToLinearHeading(new Vector2d(11, -25.8), Math.toRadians(-90))
+				.strafeToLinearHeading(new Vector2d(10, -22), Math.toRadians(-90))
 				.endTrajectory();
 
 		TrajectoryActionBuilder line7 = line6.fresh() // go through
-				.strafeTo(new Vector2d(11, -47.3))
+				.strafeTo(new Vector2d(10, -50))
 				.endTrajectory();
 
 		// ---------- Auto ----------

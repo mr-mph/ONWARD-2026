@@ -3,37 +3,29 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.InstantAction;
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Pose2dDual;
-import com.acmerobotics.roadrunner.ProfileParams;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.SleepAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.TrajectoryBuilder;
-import com.acmerobotics.roadrunner.TrajectoryBuilderParams;
-import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.*;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.*;
 
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
 
 @Config
-@Autonomous(name = "! quin auto", group = "! Auto")
+@Autonomous(name = "! quin red auto", group = "! Auto")
 public class QuinAutoRed extends LinearOpMode {
+
+	double flip(double x) {
+		return -x;
+	}
 
 	DcMotorEx intake, launcherLeft, launcherRight;
 	Servo launcher, stage2;
 	MecanumDrive drive;
-
 
 	@Override
 	public void runOpMode() {
@@ -53,7 +45,7 @@ public class QuinAutoRed extends LinearOpMode {
 		launcherRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-		Pose2d startPos = new Pose2d(-51, -48, Math.toRadians(54));
+		Pose2d startPos = new Pose2d(-51, flip(-48), Math.toRadians(flip(54)));
 		drive = new MecanumDrive(hardwareMap, startPos);
 
 		launcher.setPosition(LaunchConstants.unlaunchedPos);
@@ -61,33 +53,32 @@ public class QuinAutoRed extends LinearOpMode {
 
 		waitForStart();
 
-
-		TrajectoryActionBuilder line1 = drive.mirroredActionBuilder(startPos) // backup to shoot
-				.strafeTo(new Vector2d(-42,-39))
+		TrajectoryActionBuilder line1 = drive.actionBuilder(startPos) // backup to shoot
+				.strafeTo(new Vector2d(-42,flip(-39)))
 				.endTrajectory();
 
 		TrajectoryActionBuilder line2 = line1.fresh() // backup to not knock balls
-				.strafeTo(new Vector2d(-43.7,2-8.8))
+				.strafeTo(new Vector2d(-43.7,flip(-22)))
 				.endTrajectory();
 
 		TrajectoryActionBuilder line3 = line2.fresh() // primary
-				.strafeToLinearHeading(new Vector2d(-13, -25), Math.toRadians(-90))
+				.strafeToLinearHeading(new Vector2d(-13, flip(-22)), Math.toRadians(flip(-90)))
 				.endTrajectory();
 
 		TrajectoryActionBuilder line4 = line3.fresh() // go through
-				.strafeTo(new Vector2d(-13, -47.3))
+				.strafeTo(new Vector2d(-13, flip(-50)))
 				.endTrajectory();
 
 		TrajectoryActionBuilder line5 = line4.fresh() // go to shoot pos
-				.strafeToLinearHeading(new Vector2d(-42, -39), Math.toRadians(54))
+				.strafeToLinearHeading(new Vector2d(-42, flip(-39)), Math.toRadians(flip(54)))
 				.endTrajectory();
 
 		TrajectoryActionBuilder line6 = line5.fresh() // primary
-				.strafeToLinearHeading(new Vector2d(11, -25.8), Math.toRadians(-90))
+				.strafeToLinearHeading(new Vector2d(11, flip(-22)), Math.toRadians(flip(-90)))
 				.endTrajectory();
 
 		TrajectoryActionBuilder line7 = line6.fresh() // go through
-				.strafeTo(new Vector2d(11, -47.3))
+				.strafeTo(new Vector2d(11, flip(-50)))
 				.endTrajectory();
 
 		// ---------- Auto ----------
@@ -165,7 +156,7 @@ public class QuinAutoRed extends LinearOpMode {
 	private Action pushLauncher(boolean lastShot) {
 		return new SequentialAction(
 				new InstantAction(() -> {
-						launcher.setPosition(LaunchConstants.launchedPos);}),
+					launcher.setPosition(LaunchConstants.launchedPos);}),
 				new SleepAction(LaunchConstants.settlingTime),
 				new InstantAction(() -> {
 					stage2.setPosition(LaunchConstants.stage2Start);}),

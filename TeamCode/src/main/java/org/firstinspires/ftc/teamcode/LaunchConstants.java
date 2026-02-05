@@ -14,6 +14,7 @@ public class LaunchConstants {
 
 
 	public static double launchPower = 1430;
+	public static double propupPower = 500;
 	public static double multiplicity = 1.5;
 
 	public static double endScoot = -24;

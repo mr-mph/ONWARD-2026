@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+import static org.firstinspires.ftc.teamcode.LaunchConstants.propupPower;
 import static org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive.PARAMS;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -60,6 +61,7 @@ public class FieldCentricNew extends LinearOpMode {
 		Servo stage2 = hardwareMap.get(Servo.class,"stage2");
 		DcMotorEx launcherLeft = hardwareMap.get(DcMotorEx.class,"launchLeft");
 		DcMotorEx launcherRight = hardwareMap.get(DcMotorEx.class,"launchRight");
+		DcMotorEx propMotor = hardwareMap.get(DcMotorEx.class,"propMotor");
 		launcherLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		launcherRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -191,6 +193,7 @@ public class FieldCentricNew extends LinearOpMode {
 					}))
 			));
 
+			propMotor.setVelocity((gamepad1.dpad_left ? 1 : 0) * propupPower);
 			launcherLeft.setVelocity(isMultiplying ? (gamepad1.right_trigger+gamepad2.right_trigger) * powerMultiplier * multiplicity : (gamepad1.right_trigger+gamepad2.right_trigger) * powerMultiplier);
 			launcherRight.setVelocity(isMultiplying ? -(gamepad1.right_trigger+gamepad2.right_trigger) * powerMultiplier * multiplicity : -(gamepad1.right_trigger+gamepad2.right_trigger) * powerMultiplier);
 

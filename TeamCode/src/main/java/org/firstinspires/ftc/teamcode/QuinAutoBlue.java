@@ -17,7 +17,7 @@ import java.util.List;
 
 @Config
 @Autonomous(name = "! quin auto", group = "! Auto")
-public class QuinAuto extends LinearOpMode {
+public class QuinAutoBlue extends LinearOpMode {
 
 	DcMotorEx intake, launcherLeft, launcherRight;
 	Servo launcher, stage2;

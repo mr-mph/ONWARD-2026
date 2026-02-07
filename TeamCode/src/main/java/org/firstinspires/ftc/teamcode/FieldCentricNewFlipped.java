@@ -66,8 +66,10 @@ public class FieldCentricNewFlipped extends LinearOpMode {
 
 		DcMotorEx launcherLeft = hardwareMap.get(DcMotorEx.class,"launchLeft");
 		DcMotorEx launcherRight = hardwareMap.get(DcMotorEx.class,"launchRight");
+		DcMotorEx propMotor = hardwareMap.get(DcMotorEx.class,"propMotor");
 		launcherLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		launcherRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		propMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 		launcherLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		launcherRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -221,6 +223,8 @@ public class FieldCentricNewFlipped extends LinearOpMode {
 				launcherRight.setVelocity(isMultiplying ? -(gamepad1.right_trigger + gamepad2.right_trigger) * powerMultiplier * multiplicity : -(gamepad1.right_trigger + gamepad2.right_trigger) * powerMultiplier);
 			}
 			isMultiplying = gamepad1.a || gamepad2.a;
+
+			propMotor.setPower(gamepad1.dpad_left || gamepad2.dpad_left ? 1 : gamepad1.dpad_right || gamepad2.dpad_right ? -1 : 0);
 
 			telemetry.addData("launcher power",gamepad1.right_trigger);
 			telemetry.addData("launcher push speed",gamepad1.left_trigger);

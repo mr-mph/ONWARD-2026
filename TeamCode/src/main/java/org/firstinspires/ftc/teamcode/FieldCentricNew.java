@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-import static org.firstinspires.ftc.teamcode.LaunchConstants.propupPower;
 import static org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive.PARAMS;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -69,6 +68,7 @@ public class FieldCentricNew extends LinearOpMode {
 		launcherRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 		intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		propMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 		IMU imu = hardwareMap.get(IMU.class, "imu");
 

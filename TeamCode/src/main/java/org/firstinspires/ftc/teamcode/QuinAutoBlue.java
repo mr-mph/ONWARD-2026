@@ -109,9 +109,11 @@ public class QuinAutoBlue extends LinearOpMode {
 
 	private Action settle() {
 		return new SequentialAction(
+				new SleepAction(0.5),
 				new InstantAction(() ->
 						launcher.setPosition(LaunchConstants.settledPos)),
 				new SleepAction(LaunchConstants.settlingTime)
+
 		);
 	}
 
@@ -156,10 +158,10 @@ public class QuinAutoBlue extends LinearOpMode {
 				new SleepAction(LaunchConstants.settlingTime),
 				new InstantAction(() -> {
 					stage2.setPosition(LaunchConstants.stage2Start);}),
-				new SleepAction(LaunchConstants.launchTime),
-				new InstantAction(() ->
-						launcher.setPosition(LaunchConstants.unlaunchedPos)),
 				new SleepAction(LaunchConstants.launchTime)
+//				new InstantAction(() ->
+//						launcher.setPosition(LaunchConstants.unlaunchedPos)),
+//				new SleepAction(LaunchConstants.launchTime)
 		);
 	}
 

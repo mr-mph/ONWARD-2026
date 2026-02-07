@@ -195,7 +195,8 @@ public class FieldCentricNew extends LinearOpMode {
 					}))
 			));
 
-//			propMotor.setVelocity((gamepad1.dpad_left ? 1 : 0) * propupPower);
+			propMotor.setPower(gamepad1.dpad_left || gamepad2.dpad_left ? 1 : gamepad1.dpad_right || gamepad2.dpad_right ? -1 : 0);
+
 			if (gamepad1.ps || gamepad2.ps) {
 				launcherLeft.setVelocity(-500);
 				launcherRight.setVelocity(500);

@@ -7,7 +7,7 @@ public class LaunchConstants {
 
 	public static double unlaunchedPos = 0.35;
 	public static double settledPos = 0.35;
-	public static double launchedPos = 0.7;
+	public static double launchedPos = 0.8;
 
 	public static double launchDistance = 12;
 	public static double secondaryDistance = 48;
